@@ -1,5 +1,6 @@
 import kerberos
 import requests
+import traceback
 
 
 class KerberosClient:
@@ -20,6 +21,14 @@ class KerberosClient:
 
         def call(self) -> requests.Response:
             return requests.get(self.url, headers=self.headers)
+
+    class PostClient(Client):
+        def __init__(self, url, data):
+            super().__init__(url)
+            self.data = data
+
+        def call(self) -> requests.Response:
+            return requests.post(self.url, headers=self.headers, data=self.data)
 
     class UploadFileClient(Client):
         def __init__(self, url, file_path, dest_path):
@@ -62,12 +71,18 @@ class KerberosClient:
 
             return response
         except Exception as err:
-            print("Something is wrong with the ticket: " + err)
+            print("Something is wrong with the ticket: ")
+            print(err)
+            traceback.print_exc()
             return None
 
     def get(self, url):
-        handler = KerberosClient.GetClient(url)
-        return self.kerberos_handshake(handler)
+        client = KerberosClient.GetClient(url)
+        return self.kerberos_handshake(client)
+
+    def post(self, url, data):
+        client = KerberosClient.PostClient(url, data)
+        return self.kerberos_handshake(client)
 
     def upload_file(self, url, file_path, dest_path):
         client = KerberosClient.UploadFileClient(url, file_path, dest_path)

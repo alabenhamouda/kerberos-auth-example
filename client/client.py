@@ -3,8 +3,9 @@ from KerberosClient import KerberosClient
 
 krb = KerberosClient("host@kdc.insat.tn")
 
-response = krb.upload_file(
-    "http://kdc.insat.tn:5000/upload", "test.txt", "dest/txt")
+data = {"path": "dest/txt/test.txt"}
+response = krb.post(
+    "http://kdc.insat.tn:5000/directory", data)
 
 if response is not None:
     print("status code: " + str(response.status_code))
