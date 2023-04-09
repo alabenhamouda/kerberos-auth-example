@@ -1,30 +1,27 @@
 #!/usr/bin/env python
 
 from flask import Flask, request
-from flask import render_template
 from flask_kerberos import init_kerberos
 from flask_kerberos import requires_authentication
 import helpers
 import os
 
-DEBUG=True
+DEBUG = True
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+
 @app.route("/")
 @requires_authentication
 def index(user):
-    return render_template('index.html', user=user)
+    return f"Authentication successfull, mister {user}"
 
-@app.route("/test")
-def test():
-    return render_template('index.html', user="non authenticated")
 
 @app.route('/upload', methods=['POST'])
 @requires_authentication
 def upload_file(principal):
-    user = helpers.unix_user(principal) 
+    user = helpers.unix_user(principal)
     file = request.files['file']
     dest_path = request.form.get('dest_path')
     if not dest_path.endswith("/") and dest_path != "":
@@ -32,10 +29,11 @@ def upload_file(principal):
     file.save(helpers.get_user_home_dir(user) + dest_path + file.filename)
     return 'File uploaded!', 200
 
+
 @app.route('/read_file', methods=['POST'])
 @requires_authentication
 def read_file(principal):
-    user = helpers.unix_user(principal) 
+    user = helpers.unix_user(principal)
     home = helpers.get_user_home_dir(user)
     # Get the file path from the request form
     file_path = request.form.get('file_path')
@@ -54,10 +52,11 @@ def read_file(principal):
     else:
         return 'File path parameter is missing', 400
 
+
 @app.route('/directory', methods=['POST'])
 @requires_authentication
 def directory_content(principal):
-    user = helpers.unix_user(principal) 
+    user = helpers.unix_user(principal)
     home = helpers.get_user_home_dir(user)
     path = request.form.get('path')
     path = home + path
