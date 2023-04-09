@@ -31,6 +31,28 @@ def upload_file(principal):
     file.save(helpers.get_user_home_dir(user) + dest_path + file.filename)
     return 'File uploaded!', 200
 
+@app.route('/read_file', methods=['POST'])
+@requires_authentication
+def read_file(principal):
+    user = helpers.unix_user(principal) 
+    home = helpers.get_user_home_dir(user)
+    # Get the file path from the request form
+    file_path = request.form.get('file_path')
+    if file_path:
+        file_path = home + file_path
+        print(file_path)
+        try:
+            # Open the file in text mode for reading
+            with open(file_path, 'r') as file:
+                # Read the file contents as text
+                file_contents = file.read()
+                # Return the file contents as the response
+                return file_contents
+        except FileNotFoundError:
+            return 'File not found', 404
+    else:
+        return 'File path parameter is missing', 400
+
 if __name__ == '__main__':
     init_kerberos(app, service="host")
     app.run(host='0.0.0.0')
