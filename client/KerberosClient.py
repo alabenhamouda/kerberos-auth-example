@@ -22,15 +22,17 @@ class KerberosClient:
             return requests.get(self.url, headers=self.headers)
 
     class UploadFileClient(Client):
-        def __init__(self, url, file_path):
+        def __init__(self, url, file_path, dest_path):
             super().__init__(url)
             # Read the file to be uploaded
             self.file_path = file_path
+            self.dest_path = dest_path
 
         def call(self) -> requests.Response:
             with open(self.file_path, 'rb') as file:
                 files = {'file': file}
-                return requests.post(self.url, files=files, headers=self.headers)
+                data = {'dest_path': self.dest_path}
+                return requests.post(self.url, files=files, data=data, headers=self.headers)
 
     def __init__(self, service):
         self.service = service
@@ -67,6 +69,6 @@ class KerberosClient:
         handler = KerberosClient.GetClient(url)
         return self.kerberos_handshake(handler)
 
-    def upload_file(self, url, file_path):
-        client = KerberosClient.UploadFileClient(url, file_path)
+    def upload_file(self, url, file_path, dest_path):
+        client = KerberosClient.UploadFileClient(url, file_path, dest_path)
         return self.kerberos_handshake(client)
