@@ -25,12 +25,12 @@ class KerberosClient:
         def __init__(self, url, file_path):
             super().__init__(url)
             # Read the file to be uploaded
-            with open(file_path, 'rb') as file:
-                self.file_data = file.read()
-            self.headers['Content-Type'] = 'application/octet-stream'
+            self.file_path = file_path
 
         def call(self) -> requests.Response:
-            return requests.post(self.url, data=self.file_data, headers=self.headers)
+            with open(self.file_path, 'rb') as file:
+                files = {'file': file}
+                return requests.post(self.url, files=files, headers=self.headers)
 
     def __init__(self, service):
         self.service = service
