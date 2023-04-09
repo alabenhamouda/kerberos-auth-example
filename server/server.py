@@ -4,6 +4,7 @@ from flask import Flask, request
 from flask import render_template
 from flask_kerberos import init_kerberos
 from flask_kerberos import requires_authentication
+import helpers
 
 DEBUG=True
 
@@ -21,11 +22,13 @@ def test():
 
 @app.route('/upload', methods=['POST'])
 @requires_authentication
-def upload_file(user):
-    print(user)
+def upload_file(principal):
+    user = helpers.unix_user(principal) 
     file = request.files['file']
-    print(file)
-    file.save('/home/kali/uploads/' + file.filename)
+    dest_path = request.form.get('dest_path')
+    if not dest_path.endswith("/") and dest_path != "":
+        dest_path = dest_path + "/"
+    file.save(helpers.get_user_home_dir(user) + dest_path + file.filename)
     return 'File uploaded!', 200
 
 if __name__ == '__main__':
