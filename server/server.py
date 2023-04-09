@@ -53,29 +53,27 @@ def read_file(principal):
             return 'File not found', 404
     else:
         return 'File path parameter is missing', 400
+
 @app.route('/directory', methods=['POST'])
 @requires_authentication
 def directory_content(principal):
     user = helpers.unix_user(principal) 
     home = helpers.get_user_home_dir(user)
     path = request.form.get('path')
-    if path:
-        path = home + path
-        try:
-            # check if it is a file
-            if os.path.isfile(path):
-                return "This path points to a file", 200
-            # if it's not a file, assume it's a directory
-            else:
-                # get the content of the directory
-                content = os.listdir(path)
-                return '\n'.join(content), 200
-        except FileNotFoundError:
-            return "Directory not foudn!", 404
-        except Exception as e:
-            return str(e), 500
-    else:
-        return "Directory path is missing", 400
+    path = home + path
+    try:
+        # check if it is a file
+        if os.path.isfile(path):
+            return "This path points to a file", 200
+        # if it's not a file, assume it's a directory
+        else:
+            # get the content of the directory
+            content = os.listdir(path)
+            return '\n'.join(content), 200
+    except FileNotFoundError:
+        return "Directory not foudn!", 404
+    except Exception as e:
+        return str(e), 500
 
 
 if __name__ == '__main__':
