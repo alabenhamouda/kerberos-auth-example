@@ -4,21 +4,26 @@
 
 This project demonstrates using kerberos to authenticate clients to access a flask
 service hosted on another machine.
+
 The Flask app allows clients from remote machines to access their corresponding
 user's host directory in the machine hosting the Flask service.
 For example a user name test can access through this app his corresponding test user
 on the host machine, he can read the content of files, see the contents of directories and upload a file from his machine to the server machine.
+
 The user must authenticate throught kerberos, so he must have a ticket to access the service.
 
 ## Technologies
 
 The service is built using Flask, a framework for web development in python.
+
 The client is built using python, as a command line program
 
 ## Configuration
 
 We are going to use two machines, the server machine and the client machine.
+
 The server machine holds the KDC and the flask service.
+
 The client machine will authenticate using kerberos to access the service on the server machine.
 
 ### Kerberos Configuration
@@ -169,6 +174,9 @@ client/client.py
 ![1](screenshots/1.png)
 ![2](screenshots/2.png)
 ![3](screenshots/3.png)
+
+If we have no TGT, we can't access any route
+![4](screenshots/4.png)
 
 ## References
 
