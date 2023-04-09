@@ -70,10 +70,7 @@ class KerberosClient:
             kerberos.authGSSClientClean(krb_context)
 
             return response
-        except Exception as err:
-            print("Something is wrong with the ticket: ")
-            print(err)
-            traceback.print_exc()
+        except Exception:
             return None
 
     def get(self, url):
