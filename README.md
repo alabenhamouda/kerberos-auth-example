@@ -6,9 +6,8 @@ This project demonstrates using kerberos to authenticate clients to access a fla
 service hosted on another machine.
 
 The Flask app allows clients from remote machines to access their corresponding
-user's host directory in the machine hosting the Flask service.
-For example a user name test can access through this app his corresponding test user
-on the host machine, he can read the content of files, see the contents of directories and upload a file from his machine to the server machine.
+user's home directory in the machine hosting the Flask service.
+For example a user named test can access through this app the home directory of the user "test" on on the  machine hosting the service, he can read the content of files, see the contents of directories and upload a file from his machine to the server machine.
 
 The user must authenticate throught kerberos, so he must have a ticket to access the service.
 
@@ -77,14 +76,14 @@ kadmin.local
 ```
 
 now we'll add one principal that represents the service, which is the flask app
-and we'll add its key to the default keytab file /etc/kdc5.keytab so that it can be use to encrypt the message involved in the kerberos protocol
+and we'll add its key to the default keytab file /etc/kdc5.keytab so that it can be used to encrypt the messages involved in the kerberos protocol
 
 ```
 addprinc -randkey host/kdc.insat.tn
 ktadd host/kdc.insat.tn
 ```
 
-Next we'll add a principal for the user, the client that will use the app and we'll give a password
+Next we'll add a principal for the user, the client that will use the app and we'll give him a password
 
 ```
 addprinc user
